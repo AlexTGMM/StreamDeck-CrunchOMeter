@@ -13,14 +13,21 @@ interface MapImageUrls {
     md?: string;
 }
 
+export type DayOfWeek = "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday";
+
 interface HoursInternal {
-    sunday: { open_time: string; close_time: string };
-    monday: { open_time: string; close_time: string };
-    tuesday: { open_time: string; close_time: string };
-    wednesday: { open_time: string; close_time: string };
-    thursday: { open_time: string; close_time: string };
-    friday: { open_time: string; close_time: string };
-    saturday: { open_time: string; close_time: string };
+    sunday: DailyHours;
+    monday: DailyHours;
+    tuesday: DailyHours;
+    wednesday: DailyHours;
+    thursday: DailyHours;
+    friday: DailyHours;
+    saturday: DailyHours;
+}
+
+interface DailyHours {
+    open_time: string;
+    close_time: string;
 }
 
 interface Mms {
