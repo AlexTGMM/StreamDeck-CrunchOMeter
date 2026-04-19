@@ -1,0 +1,48 @@
+{
+	"Name": "CrunchOMeter",
+	"Version": "0.1.0.0",
+	"Author": "AlexNickels",
+	"Actions": [
+		{
+			"Name": "CrunchOMeter",
+			"UUID": "com.alexnickels.crunchometer.crunchometer",
+			"Icon": "imgs/actions/counter/icon",
+			"Tooltip": "Shows the current Crunch O Meter level",
+			"UserTitleEnabled": false,
+			"PropertyInspectorPath": "ui/club-picker.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/counter/key",
+					"TitleAlignment": "middle"
+				}
+			]
+		}
+	],
+	"Category": "CrunchOMeter",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"CodePath": "bin/plugin.js",
+	"Description": "Show the current status of the Crunch O Meter",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "24",
+		"Debug": "enabled"
+	},
+	"UUID": "com.alexnickels.crunchometer"
+}
