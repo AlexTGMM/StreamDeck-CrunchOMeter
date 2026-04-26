@@ -13,7 +13,7 @@ export class DisplayButton extends SingletonAction<ClubSettings> {
 		super();
 		streamDeck.settings.onDidReceiveGlobalSettings(ev => {
 			streamDeck.logger.info("Received global settings", ev.settings);
-			this.getKeyTitle(ev.settings.clubId as number | undefined).then(title => 
+			this.getKeyTitle(ev.settings.clubId as number | undefined).then(title =>
 				this.actions.forEach(action => action.manifestId === this.manifestId && action.setTitle(title))
 			);
 		});
