@@ -5,12 +5,12 @@ import { intervalToDuration, parse } from "date-fns";
 import streamDeck from "@elgato/streamdeck";
 
 export class Crunch {
-	static async getClub(clubId: number) {
+	public static async getClub(clubId: number) {
 		const clubData = await fetch(`https://www.crunch.com/crunch_core/clubs/${clubId}`);
 		return await clubData.json() as Club;
 	}
 
-	static async getAllClubs() {
+	public static async getAllClubs() {
 		const clubsData = await fetch('https://www.crunch.com/crunch_core/clubs');
 		return await clubsData.json() as AllClubs;
 	}
@@ -30,7 +30,7 @@ export class Crunch {
 		return parse(time, "kk:mm", new Date().setDate(now.getDate() + dayOffset));
 	}
 
-	static checkClosed(club: Club): string | null {
+	public static checkClosed(club: Club): string | null {
 		const now = new Date();
 		const dayOfWeek = this.dayToString(now.getDay());
 		const hoursForToday = club.hours_internal[dayOfWeek];

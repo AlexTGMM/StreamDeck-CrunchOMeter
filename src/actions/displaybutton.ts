@@ -1,10 +1,6 @@
 import streamDeck, { action, SingletonAction, WillAppearEvent, KeyDownEvent, SendToPluginEvent, DidReceiveSettingsEvent } from "@elgato/streamdeck";
 import { JsonValue } from "@elgato/utils";
-import { intervalToDuration, parse, set } from "date-fns";
-import { Club, DayOfWeek } from "../models/club";
 import { Crunch } from "../crunch/crunch";
-import { get } from "http";
-import { is, se } from "date-fns/locale";
 
 
 @action({ UUID: "com.alexnickels.crunchometer.crunchometer" })
@@ -17,22 +13,22 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 	}
 
 	// Handles initial loading
-	override onWillAppear(ev: WillAppearEvent<ClubSettings>) {
+	public override onWillAppear(ev: WillAppearEvent<ClubSettings>) {
 		this.updateKey(ev);
 	}
 
 	// Refreshes data on key press
-	override onKeyDown(ev: KeyDownEvent<ClubSettings>) {
+	public override onKeyDown(ev: KeyDownEvent<ClubSettings>) {
 		this.updateKey(ev);
 	}
 
-	override onDidReceiveSettings(ev: DidReceiveSettingsEvent<ClubSettings>) {
+	public override onDidReceiveSettings(ev: DidReceiveSettingsEvent<ClubSettings>) {
 		this.updateKey(ev);
 	}
 
 	// These events all share a parent, but it isn't exported publicly
-	private async updateKey(ev: KeyDownEvent<ClubSettings> | WillAppearEvent<ClubSettings> | DidReceiveSettingsEvent<ClubSettings>, isRecurse = false): Promise<void> {
-		let clubId = ev.payload.settings.clubId;
+	private async updateKey(ev: DidReceiveSettingsEvent<ClubSettings> | KeyDownEvent<ClubSettings> | WillAppearEvent<ClubSettings>, isRecurse = false): Promise<void> {
+		const clubId = ev.payload.settings.clubId;
 		streamDeck.logger.debug(`starting Updating key for club ${clubId}, isRecurse:${isRecurse}`);
 		if (!clubId) {
 			ev.action.setTitle("No club\nselected");
@@ -78,7 +74,7 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 	}
 
 	// Handles data loading requests from the Property Inspector
-	override onSendToPlugin(ev: SendToPluginEvent<JsonValue, ClubSettings>): Promise<void> | void {
+	public override onSendToPlugin(ev: SendToPluginEvent<JsonValue, ClubSettings>): Promise<void> | void {
 		// Check if the payload is requesting a data source, i.e. the structure is { event: string }
 		if (ev.payload instanceof Object && "event" in ev.payload && ev.payload.event === "getClubs") {
 			streamDeck.logger.debug("Received request for clubs data source");
