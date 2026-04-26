@@ -23,6 +23,10 @@ export class Crunch {
 	private static parseDate(time: string, now: Date, dayOffset: number): Date {
 		// TODO: The timezones in the data are non-standard.  For now, this assumes the plugin is 
 		// running in the same timezone as the club	
+
+		// since the day is missing in the input, we have to manually increment the offset for midnight
+		if (time == '24:00') dayOffset += 1;
+
 		return parse(time, "kk:mm", new Date().setDate(now.getDate() + dayOffset));
 	}
 

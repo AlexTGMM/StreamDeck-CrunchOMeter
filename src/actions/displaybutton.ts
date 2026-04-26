@@ -11,12 +11,6 @@ export class DisplayButton extends SingletonAction<ClubSettings> {
 
 	constructor() {
 		super();
-		streamDeck.settings.onDidReceiveGlobalSettings(ev => {
-			streamDeck.logger.info("Received global settings", ev.settings);
-			this.getKeyTitle(ev.settings.clubId as number | undefined).then(title =>
-				this.actions.forEach(action => action.manifestId === this.manifestId && action.setTitle(title))
-			);
-		});
 	}
 
 	// Handles initial loading
@@ -38,7 +32,7 @@ export class DisplayButton extends SingletonAction<ClubSettings> {
 	private async getKeyTitle(clubId: number | undefined): Promise<string> {
 		if (!clubId) {
 			streamDeck.logger.info("No club selected");
-			return `No club selected`;
+			return `No club\nselected`;
 		}
 		const club = await Crunch.getClub(clubId);
 		streamDeck.logger.info(club);
