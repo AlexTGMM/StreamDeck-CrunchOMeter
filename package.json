@@ -20,7 +20,7 @@
         "undici-types": "^8.1.0"
     },
     "dependencies": {
-        "@elgato/streamdeck": "^2.0.0",
+        "@elgato/streamdeck": "^2.1.0",
         "date-fns": "^4.1.0"
     }
 }

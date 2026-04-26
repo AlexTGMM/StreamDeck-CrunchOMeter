@@ -1,6 +1,5 @@
 import streamDeck from "@elgato/streamdeck";
-
-import { DisplayButton } from "./actions/displaybutton";
+import { DisplayButton } from "./actions/DisplayButton";
 
 streamDeck.logger.setLevel("trace");
 
