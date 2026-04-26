@@ -10,9 +10,7 @@
 			"Tooltip": "Shows the current Crunch O Meter level",
 			"UserTitleEnabled": false,
 			"PropertyInspectorPath": "ui/club-picker.html",
-			"Controllers": [
-				"Keypad"
-			],
+			"Controllers": ["Keypad"],
 			"States": [
 				{
 					"Image": "imgs/actions/counter/key",

@@ -1,23 +1,15 @@
 {
 	"extends": "@tsconfig/node20/tsconfig.json",
 	"compilerOptions": {
-		"customConditions": [
-			"node"
-		],
+		"customConditions": ["node"],
 		"module": "ES2022",
 		"moduleResolution": "Bundler",
 		"noImplicitOverride": true,
 		"paths": {
 			// This is solely to stop a bug with @types/node as of 12/15/2023
-			"undici-types": [
-				"./node_modules/undici-types/index.d.ts"
-			],
+			"undici-types": ["./node_modules/undici-types/index.d.ts"]
 		}
 	},
-	"include": [
-		"src/**/*.ts"
-	],
-	"exclude": [
-		"node_modules"
-	]
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
 }

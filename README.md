@@ -2,4 +2,4 @@ This is a [Stream Deck plugin](https://docs.elgato.com/streamdeck/sdk/introducti
 
 It is currently in an unreleased development stage.
 
-This project was created by someone who got tired of waiting for the gym to be less busy, losing track of time, and not getting a workout in.  The project is not associated with the (presumably) good folks at El Gato or Crunch Fitness.  (But it could be if they would like.)
+This project was created by someone who got tired of waiting for the gym to be less busy, losing track of time, and not getting a workout in. The project is not associated with the (presumably) good folks at El Gato or Crunch Fitness. (But it could be if they would like.)
