@@ -1,8 +1,11 @@
 import streamDeck from "@elgato/streamdeck";
-import { DisplayButton } from "./actions/DisplayButton";
+import { CrunchButton } from "./actions/DisplayButton";
 
 streamDeck.logger.setLevel("trace");
 
-streamDeck.actions.registerAction(new DisplayButton());
+// Only call onDidReceive[Global]Settings when settings change.
+streamDeck.settings.useExperimentalMessageIdentifiers = true;
+
+streamDeck.actions.registerAction(new CrunchButton());
 
 streamDeck.connect();
