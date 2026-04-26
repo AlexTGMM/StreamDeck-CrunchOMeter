@@ -60,7 +60,7 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 		}
 		this.intervals.set(clubId, setInterval(() => {
 			this.updateKey(ev, true);
-		}, 10000));
+		}, 60000));
 
 	}
 
