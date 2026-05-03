@@ -53,6 +53,7 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 		// Newly placed key before it's configured
 		if (!clubId) {
 			ev.action.setTitle("No club\nselected");
+			ev.action.setImage("imgs/barbells/AllBars")
 			return;
 		}
 

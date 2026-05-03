@@ -6,24 +6,24 @@
 		{
 			"Name": "CrunchOMeter",
 			"UUID": "com.alexnickels.crunchometer.crunchometer",
-			"Icon": "imgs/barbells/Yellow",
+			"Icon": "imgs/barbells/AllBars",
 			"Tooltip": "Shows the current Crunch O Meter level",
 			"UserTitleEnabled": false,
 			"PropertyInspectorPath": "ui/club-picker.html",
 			"Controllers": ["Keypad"],
 			"States": [
 				{
-					"Image": "imgs/barbells/Red",
+					"Image": "imgs/barbells/AllBars",
 					"TitleAlignment": "middle"
 				}
 			]
 		}
 	],
 	"Category": "CrunchOMeter",
-	"CategoryIcon": "imgs/barbells/Yellow",
+	"CategoryIcon": "imgs/barbells/AllBars",
 	"CodePath": "bin/plugin.js",
 	"Description": "Show the current status of the Crunch O Meter",
-	"Icon": "imgs/barbells/Yellow",
+	"Icon": "imgs/barbells/AllBars",
 	"SDKVersion": 3,
 	"Software": {
 		"MinimumVersion": "7.1"
