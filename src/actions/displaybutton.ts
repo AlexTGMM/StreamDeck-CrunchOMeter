@@ -77,7 +77,31 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 		// if we passed in a title, use it, otherwise get a new one
 		Promise.resolve(existingStatus ?? this.getKeyTitle(clubId)).then(
 			(clubStatus) => {
+				// update the title
 				ev.action.setTitle(clubStatus.title());
+
+				const occupancyLevel =
+					clubStatus.club.current_occupancy /
+					Math.max(1, clubStatus.club.max_occupancy);
+				streamDeck.logger.debug(
+					`Club ${clubId} as occupancy level ${occupancyLevel} ${clubStatus.club.current_occupancy}/${clubStatus.club.max_occupancy}`,
+				);
+				// update the image
+				if (clubStatus.isClosed) {
+					ev.action.setImage(
+						// solid black square
+						`data:image/svg+xml,` +
+							encodeURIComponent(
+								`<svg width="100" height="100"><rect width="100%" height="100%" fill="black" /></svg>`,
+							),
+					);
+				} else if (occupancyLevel <= 0.5) {
+					ev.action.setImage("imgs/barbells/Green");
+				} else if (occupancyLevel <= 0.75) {
+					ev.action.setImage("imgs/barbells/Yellow");
+				} else {
+					ev.action.setImage("imgs/barbells/Red");
+				}
 
 				// These intervals reschedule themselves every time they're called, but this gives us an
 				// opportunity to cancel them, and if it crashes once, we don't lose the updater thread

@@ -26,7 +26,10 @@ export class ClubStatus {
 				title = "Closed";
 			}
 		} else {
-			title = this.club.occupancy_status;
+			// title case the occupancy status
+			title = this.club.occupancy_status.split(' ').map(word => {
+				return word.charAt(0).toUpperCase() + word.slice(1)
+			}).join();
 		}
 		return title + `\n${this.club.name}`;
 	}
