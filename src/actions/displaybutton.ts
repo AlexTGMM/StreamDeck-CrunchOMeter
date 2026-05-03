@@ -7,7 +7,8 @@ import streamDeck, {
 	DidReceiveSettingsEvent,
 } from "@elgato/streamdeck";
 import { JsonValue } from "@elgato/utils";
-import { ClubStatus, Crunch } from "../crunch/crunch";
+import { Crunch } from "../crunch/crunch";
+import { ClubStatus } from "../crunch/ClubStatus";
 import { Key } from "readline";
 import { stat } from "fs";
 import { getSeconds } from "date-fns";

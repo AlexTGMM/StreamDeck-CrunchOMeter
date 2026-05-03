@@ -1,9 +1,10 @@
 import fetch from "node-fetch";
 import { AllClubs } from "../models/allClubs";
 import { Club, DayOfWeek } from "../models/club";
-import { intervalToDuration, parse } from "date-fns";
+import { parse } from "date-fns";
 import streamDeck from "@elgato/streamdeck";
 import { el } from "date-fns/locale";
+import { ClubStatus } from "./ClubStatus";
 
 export class Crunch {
 	public static async getClub(clubId: number) {
@@ -75,39 +76,4 @@ export class Crunch {
 	}
 }
 
-export class ClubStatus {
-	club: Club;
-	isClosed: boolean;
-	closedUntil?: Date;
-	constructor(club: Club, isClosed: boolean, selfUpdatesUntil?: Date) {
-		this.club = club;
-		this.isClosed = isClosed;
-		this.closedUntil = selfUpdatesUntil;
-	}
 
-	public title(): string {
-		var title: string;
-		if (this.isClosed) {
-			// This should always be defined if the club is closed
-			if (this.closedUntil) {
-				title = ClubStatus.opensIn(new Date(), this.closedUntil);
-			} else {
-				streamDeck.logger.error(
-					"Club is closed but selfUpdatesUntil is not defined",
-				);
-				title = "Closed";
-			}
-		} else {
-			title = this.club.occupancy_status;
-		}
-		return title + `\n${this.club.name}`;
-	}
-
-	private static opensIn(now: Date, openTime: Date): string {
-		const { hours, minutes } = intervalToDuration({
-			start: now,
-			end: openTime,
-		});
-		return `Opens in\n${hours?.toString().padStart(2, "0").concat(":") ?? ""}${minutes?.toString().padStart(2, "0") ?? "00"}`;
-	}
-}
