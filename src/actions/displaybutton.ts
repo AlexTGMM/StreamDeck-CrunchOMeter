@@ -7,7 +7,10 @@ import streamDeck, {
 	DidReceiveSettingsEvent,
 } from "@elgato/streamdeck";
 import { JsonValue } from "@elgato/utils";
-import { Crunch } from "../crunch/crunch";
+import { ClubStatus, Crunch } from "../crunch/crunch";
+import { Key } from "readline";
+import { stat } from "fs";
+import { getSeconds } from "date-fns";
 
 @action({ UUID: "com.alexnickels.crunchometer.crunchometer" })
 export class CrunchButton extends SingletonAction<ClubSettings> {
@@ -39,12 +42,14 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 			| DidReceiveSettingsEvent<ClubSettings>
 			| KeyDownEvent<ClubSettings>
 			| WillAppearEvent<ClubSettings>,
+		existingTitle?: KeyTitle,
 		isRecurse = false,
 	): Promise<void> {
 		const clubId = ev.payload.settings.clubId;
 		streamDeck.logger.debug(
 			`starting Updating key for club ${clubId}, isRecurse:${isRecurse}`,
 		);
+		// Newly placed key before it's configured
 		if (!clubId) {
 			ev.action.setTitle("No club\nselected");
 			return;
@@ -58,7 +63,7 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 					`got setting for club ${settings.clubId}, comparing to ${clubId}`,
 				);
 				return settings.clubId == clubId;
-			})
+			}) == undefined
 		) {
 			clearInterval(this.intervals.get(clubId));
 			this.intervals.delete(clubId);
@@ -68,18 +73,34 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 			return;
 		}
 		streamDeck.logger.debug(`actually updating key for club ${clubId}`);
-		this.getKeyTitle(clubId).then((title) => ev.action.setTitle(title));
+		// if we passed in a title, use it, otherwise get a new one
+		Promise.resolve(existingTitle ?? this.getKeyTitle(clubId)).then((title) => {
+			ev.action.setTitle(title.title);
 
-		// These intervals reschedule themselves every time they're called, but this gives us an opportunity to cancel them, and if it crashes once, we don't loose the updater thread
-		if (this.intervals.has(clubId)) {
-			clearInterval(this.intervals.get(clubId));
-		}
-		this.intervals.set(
-			clubId,
-			setInterval(() => {
-				this.updateKey(ev, true);
-			}, 60000),
-		);
+			// These intervals reschedule themselves every time they're called, but this gives us an
+			// opportunity to cancel them, and if it crashes once, we don't lose the updater thread
+			if (this.intervals.has(clubId)) {
+				clearInterval(this.intervals.get(clubId));
+			}
+			const now = new Date();
+			this.intervals.set(
+				clubId,
+				setInterval(
+					() => {
+						if (title.isClosed && (title.selfUpdatesUntil ?? now < now)) {
+							this.updateKey(ev, title, true);
+						} else {
+							this.updateKey(ev, undefined, true);
+						}
+					},
+					title.isClosed
+						? // if we're displaying times, update 1 second after the next minute starts
+							(61 - getSeconds(now)) * 1000
+						: // if we're fetching new data, update every 10 minutes
+							10 * 60 * 1000,
+				),
+			);
+		});
 	}
 
 	private async getAllSettings(): Promise<ClubSettings[]> {
@@ -91,12 +112,21 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 	}
 
 	// Common logic for loading club data and calculatinFg the title
-	private async getKeyTitle(clubId: number): Promise<string> {
+	private async getKeyTitle(clubId: number): Promise<KeyTitle> {
 		const club = await Crunch.getClub(clubId);
 		streamDeck.logger.debug(club);
-		return (
-			(Crunch.checkClosed(club) ?? club.occupancy_status) + `\n${club.name}`
-		);
+		const status = Crunch.checkClosed(club);
+		let title: string;
+		if (status.isClosed) {
+			// This should always be defined if the club is closed
+			title = status.openTime?.() ?? "Closed";
+		} else {
+			title = club.occupancy_status;
+		}
+		return {
+			...status,
+			title: title + `\n${club.name}`,
+		};
 	}
 
 	// Handles data loading requests from the Property Inspector
@@ -135,3 +165,7 @@ export class CrunchButton extends SingletonAction<ClubSettings> {
 export type ClubSettings = {
 	clubId?: number;
 };
+
+interface KeyTitle extends ClubStatus {
+	title: string;
+}

@@ -35,7 +35,7 @@ export class Crunch {
 		return parse(time, "kk:mm", new Date().setDate(now.getDate() + dayOffset));
 	}
 
-	public static checkClosed(club: Club): string | null {
+	public static checkClosed(club: Club): ClubStatus {
 		const now = new Date();
 		const dayOfWeek = this.dayToString(now.getDay());
 		const hoursForToday = club.hours_internal[dayOfWeek];
@@ -43,7 +43,12 @@ export class Crunch {
 		// If the next open time is today
 		if (now < this.parseDate(hoursForToday.open_time, now, 0)) {
 			streamDeck.logger.info(`Current time: ${now}, Open time: ${openTime}`);
-			return this.opensIn(now, openTime);
+			return {
+				clubId: club.id,
+				isClosed: true,
+				selfUpdatesUntil: openTime,
+				openTime: () => this.opensIn(now, openTime),
+			};
 		} else if (now > this.parseDate(hoursForToday.close_time, now, 0)) {
 			// if it's after today's close time, check the next open time tomorrow
 			// TODO: This assumes that the clubs are open every day
@@ -56,9 +61,17 @@ export class Crunch {
 			streamDeck.logger.info(
 				`Current time: ${now}, Open time: ${nextOpenTime}`,
 			);
-			return this.opensIn(now, nextOpenTime);
+			return {
+				clubId: club.id,
+				isClosed: true,
+				selfUpdatesUntil: nextOpenTime,
+				openTime: () => this.opensIn(now, nextOpenTime),
+			};
 		}
-		return null;
+		return {
+			clubId: club.id,
+			isClosed: false,
+		};
 	}
 
 	private static dayToString(day: number): DayOfWeek {
@@ -80,4 +93,11 @@ export class Crunch {
 		}
 		throw new Error("Invalid day number: " + day);
 	}
+}
+
+export interface ClubStatus {
+	clubId: number;
+	isClosed: boolean;
+	selfUpdatesUntil?: Date;
+	openTime?: () => string;
 }
